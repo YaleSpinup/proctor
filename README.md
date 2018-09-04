@@ -127,9 +127,9 @@ POST http://127.0.0.1:3000/v1/proctor/test/responses
 
 ## Initial setup
 
-	- Create an S3 bucket in AWS and a user with full privileges to that bucket
-	- Deploy Proctor and specify the key/secret and bucket name in `.env` (see `.env.example`)
-	- In the S3 bucket, create the following layout:
+- Create an S3 bucket in AWS and a user with full privileges to that bucket
+- Deploy Proctor and specify the key/secret and bucket name in `.env` (see `.env.example`)
+- In the S3 bucket, create the following layout:
 	```
 	/questions
 	  /test_campaign
