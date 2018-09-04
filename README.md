@@ -140,53 +140,53 @@ POST http://127.0.0.1:3000/v1/proctor/test/responses
     /risklevels.json
 ```
 
-	Here's a sample `questions.json` (make sure the `version` matches the version of the parent folder):
-	```
-	{
-	  "description": "List of questions and their corresponding answers and data type(s)",
-	  "updated": "2018-09-03",
-	  "version": "1.0",
-	  "risklevels_version": "1.0",
+Here's a sample `questions.json` (make sure the `version` matches the version of the parent folder):
+```
+{
+  "description": "List of questions and their corresponding answers and data type(s)",
+  "updated": "2018-09-03",
+  "version": "1.0",
+  "risklevels_version": "1.0",
 
-	  "questions": {
-	    "E8B8B198-EDDB-48AF-8068-749D4982849C": {
-	      "text": "Do you have super-secret medical financial data?",
-	      "answers": {
-	        "a": { "text": "Yes", "datatypes": ["HIPAA", "PCI"] },
-	        "b": { "text": "No", "datatypes": [] }
-	      }
-	    },
-	    "287A0832-C218-4B07-9019-62BEB9DE0CD6": {
-	      "text": "Do you have patient data?",
-	      "answers": {
-	        "a": { "text": "Yes", "datatypes": ["HIPAA"] },
-	        "b": { "text": "No", "datatypes": [] }
-	      }
-	    },
-	    "8E693F8E-475A-475B-950F-F17EA997DD32": {
-	      "text": "Do you have student data?",
-	      "answers": {
-	        "a": { "text": "Yes", "datatypes": ["FERPA"] },
-	        "b": { "text": "No", "datatypes": [] }
-	      }
-	    }
-	  }
-	}
-	```
+  "questions": {
+    "E8B8B198-EDDB-48AF-8068-749D4982849C": {
+      "text": "Do you have super-secret medical financial data?",
+      "answers": {
+        "a": { "text": "Yes", "datatypes": ["HIPAA", "PCI"] },
+        "b": { "text": "No", "datatypes": [] }
+      }
+    },
+    "287A0832-C218-4B07-9019-62BEB9DE0CD6": {
+      "text": "Do you have patient data?",
+      "answers": {
+        "a": { "text": "Yes", "datatypes": ["HIPAA"] },
+        "b": { "text": "No", "datatypes": [] }
+      }
+    },
+    "8E693F8E-475A-475B-950F-F17EA997DD32": {
+      "text": "Do you have student data?",
+      "answers": {
+        "a": { "text": "Yes", "datatypes": ["FERPA"] },
+        "b": { "text": "No", "datatypes": [] }
+      }
+    }
+  }
+}
+```
 
-	Here's a sample `risklevels.json` (make sure the `version` matches the version of the parent folder):
-	```
-	{
-	  "description": "List of supported security risk levels and their corresponding data types",
-	  "version": "1.0",
-	  "updated": "2018-09-02",
-	  "risklevels": [
-	    { "score": 30, "text": "high", "datatypes": ["HIPAA", "PCI", "FISMA"] },
-	    { "score": 20, "text": "moderate", "datatypes": ["FERPA"] },
-	    { "score": 0, "text": "low", "datatypes": [] }
-	  ]
-	}
-	```
+Here's a sample `risklevels.json` (make sure the `version` matches the version of the parent folder):
+```
+{
+  "description": "List of supported security risk levels and their corresponding data types",
+  "version": "1.0",
+  "updated": "2018-09-02",
+  "risklevels": [
+    { "score": 30, "text": "high", "datatypes": ["HIPAA", "PCI", "FISMA"] },
+    { "score": 20, "text": "moderate", "datatypes": ["FERPA"] },
+    { "score": 0, "text": "low", "datatypes": [] }
+  ]
+}
+```
 
 ## Authors
 
