@@ -130,15 +130,15 @@ POST http://127.0.0.1:3000/v1/proctor/test/responses
 - Create an S3 bucket in AWS and a user with full privileges to that bucket
 - Deploy Proctor and specify the key/secret and bucket name in `.env` (see `.env.example`)
 - In the S3 bucket, create the following layout:
-	```
-	/questions
-	  /test_campaign
-		  /1.0
-			  /questions.json
-	/risklevels
-	  /1.0
-		  /risklevels.json
-	```
+```
+/questions
+  /test_campaign
+    /1.0
+      /questions.json
+/risklevels
+  /1.0
+    /risklevels.json
+```
 
 	Here's a sample `questions.json` (make sure the `version` matches the version of the parent folder):
 	```
