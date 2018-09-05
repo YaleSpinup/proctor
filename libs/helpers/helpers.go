@@ -1,4 +1,4 @@
-package actions
+package helpers
 
 import (
 	"log"
@@ -6,29 +6,11 @@ import (
 	"strings"
 )
 
-// getVersions returns a list of all versions under a given prefix
-// This assumes a specific format when organizing the objects in the S3 bucket, e.g.
-//   s3://bucket/prefix/1.0/file.json
-func getVersions(prefix, delimiter string) ([]string, error) {
-	dv, err := S3.ListObjects(prefix, delimiter)
-	if err != nil {
-		return nil, err
-	}
-
-	var versions []string
-	// split the object prefixes to get the last part which is the version
-	for _, p := range dv.CommonPrefixes {
-		s := strings.Split(strings.Trim(*p.Prefix, "/"), "/")
-		versions = append(versions, s[len(s)-1])
-	}
-	return versions, nil
-}
-
-// latestVersion gets a slice of versions and returns the latest version as a string
+// LatestVersion gets a slice of versions and returns the latest version as a string
 // e.g. ["0.1", "0.10", "1.0"] or ["0.1.0", "0.10.1", "1.0.2"]
 // any number of minor/patch versions will work as long as all versions are consistent
 // i.e. this is not allowed ["0.1", "0.10.0", "1.0"] and the function will return ""
-func latestVersion(vl []string) string {
+func LatestVersion(vl []string) string {
 	if len(vl) == 0 {
 		return ""
 	}
@@ -72,4 +54,28 @@ func latestVersion(vl []string) string {
 	}
 
 	return strings.Join(ss[len(ss)-1], ".")
+}
+
+// StringInSlice returns true if s is in the list slice
+func StringInSlice(s string, list []string) bool {
+	for _, v := range list {
+		if v == s {
+			return true
+		}
+	}
+	return false
+}
+
+// UniqueSlice returns a slice containing only the unique strings from the original
+func UniqueSlice(s []string) []string {
+	seen := map[string]bool{}
+	for k := range s {
+		seen[s[k]] = true
+	}
+
+	result := []string{}
+	for k := range seen {
+		result = append(result, k)
+	}
+	return result
 }
