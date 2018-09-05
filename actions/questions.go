@@ -3,6 +3,7 @@ package actions
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/gobuffalo/buffalo"
@@ -20,8 +21,8 @@ type Question struct {
 	Answers map[string]Answer `json:"answers"`
 }
 
-// QuestionsList is a versioned collection of questions
-type QuestionsList struct {
+// Questions is a versioned collection of Question's
+type Questions struct {
 	List              map[string]Question `json:"questions"`
 	Version           string              `json:"version"`
 	RisklevelsVersion string              `json:"risklevels_version"`
@@ -39,7 +40,7 @@ func QuestionsGet(c buffalo.Context) error {
 		return err
 	}
 
-	var ql *QuestionsList
+	var ql Questions
 	if err := json.Unmarshal(q, &ql); err != nil {
 		return c.Error(500, errors.New("Unable to unmarshal questions"))
 	}
@@ -70,9 +71,9 @@ func loadQuestions(campaign, version string) ([]byte, error) {
 		}
 	}
 
-	log.Println("Loading " + campaign + " questions version " + version)
-
-	q, err := S3.GetObject("questions/" + campaign + "/" + version + "/questions.json")
+	log.Printf("Loading %s questions version %s", campaign, version)
+	path := fmt.Sprintf("questions/%s/%s/questions.json", campaign, version)
+	q, err := S3.GetObject(path)
 	if err != nil {
 		if len(q) == 0 {
 			return []byte{}, errors.New("Object not found in S3")

@@ -19,7 +19,7 @@ import (
 var ENV = envy.Get("GO_ENV", "development")
 
 // S3 has the initialized client session
-var S3 s3.S3Client
+var S3 s3.Client
 
 var app *buffalo.App
 
@@ -50,12 +50,10 @@ func App() *buffalo.App {
 		}
 
 		// initialize S3 client session
-		S3 = s3.NewSession(os.Getenv("S3_API_KEY"), os.Getenv("S3_API_SECRET"), os.Getenv("S3_REGION"))
-		S3.Bucket = os.Getenv("S3_BUCKET")
-
-		app.GET("/v1/proctor/ping", PingPong)
+		S3 = s3.NewSession(os.Getenv("S3_API_KEY"), os.Getenv("S3_API_SECRET"), os.Getenv("S3_REGION"), os.Getenv("S3_BUCKET"))
 
 		userAPI := app.Group("/v1/proctor")
+		userAPI.GET("/ping", PingPong)
 		userAPI.GET("/risklevels", RiskLevelsGet)
 		userAPI.GET("/{campaign}/questions", QuestionsGet)
 		userAPI.POST("/{campaign}/responses", ResponsesPost)

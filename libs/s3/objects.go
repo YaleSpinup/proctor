@@ -10,7 +10,7 @@ import (
 )
 
 // GetObject returns an object from S3
-func (s S3Client) GetObject(key string) ([]byte, error) {
+func (s Client) GetObject(key string) ([]byte, error) {
 	input := &s3.GetObjectInput{
 		Bucket: aws.String(s.Bucket),
 		Key:    aws.String(key),
@@ -18,16 +18,9 @@ func (s S3Client) GetObject(key string) ([]byte, error) {
 
 	result, err := s.Service.GetObject(input)
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case s3.ErrCodeNoSuchKey:
-				log.Println(s3.ErrCodeNoSuchKey, aerr.Error(), input)
-				return []byte{}, err
-			default:
-				log.Println(aerr.Error(), input)
-			}
-		} else {
-			log.Println(err.Error(), input)
+		log.Println(err.Error(), input)
+		if aerr, ok := err.(awserr.Error); ok && aerr.Code() == s3.ErrCodeNoSuchKey {
+			return []byte{}, err
 		}
 		return nil, err
 	}
@@ -44,7 +37,7 @@ func (s S3Client) GetObject(key string) ([]byte, error) {
 }
 
 // ListObjects returns a list of objects from S3
-func (s S3Client) ListObjects(prefix, delimiter string) (*s3.ListObjectsOutput, error) {
+func (s Client) ListObjects(prefix, delimiter string) (*s3.ListObjectsOutput, error) {
 	input := &s3.ListObjectsInput{
 		Bucket:    aws.String(s.Bucket),
 		Prefix:    aws.String(prefix),
@@ -53,16 +46,7 @@ func (s S3Client) ListObjects(prefix, delimiter string) (*s3.ListObjectsOutput, 
 
 	result, err := s.Service.ListObjects(input)
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case s3.ErrCodeNoSuchBucket:
-				log.Println(s3.ErrCodeNoSuchBucket, aerr.Error(), input)
-			default:
-				log.Println(aerr.Error(), input)
-			}
-		} else {
-			log.Println(err.Error(), input)
-		}
+		log.Println(err.Error(), input)
 		return nil, err
 	}
 

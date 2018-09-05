@@ -3,6 +3,7 @@ package actions
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/gobuffalo/buffalo"
@@ -15,8 +16,8 @@ type RiskLevel struct {
 	Datatypes []string `json:"datatypes"`
 }
 
-// RiskLevelsList is a versioned collection of RiskLevels
-type RiskLevelsList struct {
+// RiskLevels is a versioned collection of RiskLevel's
+type RiskLevels struct {
 	List    []RiskLevel `json:"risklevels"`
 	Version string      `json:"version"`
 	Updated string      `json:"updated"`
@@ -33,7 +34,7 @@ func RiskLevelsGet(c buffalo.Context) error {
 		return err
 	}
 
-	var risklevels *RiskLevelsList
+	var risklevels RiskLevels
 	if err := json.Unmarshal(rl, &risklevels); err != nil {
 		return errors.New("Unable to unmarshal risk levels")
 	}
@@ -56,9 +57,9 @@ func loadRiskLevels(version string) ([]byte, error) {
 		}
 	}
 
-	log.Println("Loading risk levels version " + version)
-
-	d, err := S3.GetObject("risklevels/" + version + "/risklevels.json")
+	log.Printf("Loading risk levels version %s", version)
+	path := fmt.Sprintf("risklevels/%s/risklevels.json", version)
+	d, err := S3.GetObject(path)
 	if err != nil {
 		if len(d) == 0 {
 			return []byte{}, errors.New("Object not found in S3")

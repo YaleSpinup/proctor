@@ -14,8 +14,8 @@ type Response struct {
 	RiskLevel string   `json:"risklevel"`
 }
 
-// ResponsesList is a collection of responses to questions submitted by the client
-type ResponsesList struct {
+// Responses is a collection of responses to questions submitted by the client
+type Responses struct {
 	List              map[string]string `json:"responses"`
 	RisklevelsVersion string            `json:"risklevels_version"`
 	QuestionsVersion  string            `json:"questions_version"`
@@ -23,13 +23,13 @@ type ResponsesList struct {
 
 // ResponsesPost processes the question responses and returns the data type and security level in a Response
 func ResponsesPost(c buffalo.Context) error {
-	rl := &ResponsesList{}
-	if err := c.Bind(rl); err != nil {
+	var rl Responses
+	if err := c.Bind(&rl); err != nil {
 		return c.Error(400, errors.New("Bad request"))
 	}
 
 	// get questions/answers for the given campaign and version
-	var ql *QuestionsList
+	var ql Questions
 	q, err := loadQuestions(c.Param("campaign"), rl.QuestionsVersion)
 	if err != nil {
 		if len(q) == 0 {
@@ -48,7 +48,7 @@ func ResponsesPost(c buffalo.Context) error {
 	}
 
 	// get mapping of data types to risk levels
-	var risklevels *RiskLevelsList
+	var risklevels RiskLevels
 	rls, err := loadRiskLevels(c.Param("version"))
 	if err != nil {
 		if len(rls) == 0 {
@@ -64,12 +64,13 @@ func ResponsesPost(c buffalo.Context) error {
 	var resp Response
 	resp.DataTypes = dt
 	resp.RiskLevel = highestRiskLevel(dt, risklevels.List)
+	log.Println("Response outcome", resp)
 
 	return c.Render(200, r.JSON(resp))
 }
 
 // processResponse returns a slice of data types, or error if the response is invalid
-func processResponse(rl *ResponsesList, ql *QuestionsList) ([]string, error) {
+func processResponse(rl Responses, ql Questions) ([]string, error) {
 	// basic response length validation
 	if len(rl.List) != len(ql.List) {
 		return nil, errors.New("Invalid question response: all questions must be answered")
