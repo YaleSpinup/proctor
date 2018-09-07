@@ -9,7 +9,13 @@ import (
 	"github.com/gobuffalo/buffalo"
 )
 
-// ResponsesPost processes the question responses and returns the data type and security level in a Response
+// Outcome has the data types and risk level outcome determined based on the questions response
+type Outcome struct {
+	DataTypes []string `json:"datatypes"`
+	RiskLevel string   `json:"risklevel"`
+}
+
+// ResponsesPost processes the question responses and returns the data type and security level in an Outcome
 func ResponsesPost(c buffalo.Context) error {
 	responses := models.Responses{}
 	if err := c.Bind(&responses); err != nil {
@@ -54,11 +60,10 @@ func ResponsesPost(c buffalo.Context) error {
 		return err
 	}
 
-	// build the response
-	var resp models.Response
-	resp.DataTypes = datatypes
-	resp.RiskLevel = hr.Text
-	log.Println("Response outcome", resp)
+	var outcome Outcome
+	outcome.DataTypes = datatypes
+	outcome.RiskLevel = hr.Text
+	log.Println("Outcome response:", outcome)
 
-	return c.Render(200, r.JSON(resp))
+	return c.Render(200, r.JSON(outcome))
 }

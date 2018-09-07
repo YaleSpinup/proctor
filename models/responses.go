@@ -6,9 +6,3 @@ type Responses struct {
 	RisklevelsVersion string            `json:"risklevels_version"`
 	QuestionsVersion  string            `json:"questions_version"`
 }
-
-// Response has the data types and risk level determined based on the questions response
-type Response struct {
-	DataTypes []string `json:"datatypes"`
-	RiskLevel string   `json:"risklevel"`
-}
