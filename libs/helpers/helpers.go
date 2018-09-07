@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -57,7 +56,14 @@ func LatestVersion(vl []string) (string, error) {
 			}
 		}
 	}
-	return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(latest)), "."), "[]"), nil
+
+	// convert []int to []string
+	ls := make([]string, len(latest))
+	for i, n := range latest {
+		ls[i] = strconv.Itoa(n)
+	}
+
+	return strings.Join(ls, "."), nil
 }
 
 // StringInSlice returns true if s is in the list slice
