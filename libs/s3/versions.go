@@ -5,8 +5,8 @@ import "strings"
 // GetVersions returns a list of all versions under a given prefix in S3
 // This assumes a specific format when organizing the objects in the S3 bucket, e.g.
 //   s3://bucket/prefix/1.0/file.json
-func (s Client) GetVersions(prefix, delimiter string) ([]string, error) {
-	dv, err := s.ListObjects(prefix, delimiter)
+func (s Client) GetVersions(prefix string) ([]string, error) {
+	dv, err := s.ListObjects(prefix, "/")
 	if err != nil {
 		return nil, err
 	}

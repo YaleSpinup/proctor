@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"errors"
 	"log"
 	"strconv"
 	"strings"
@@ -10,9 +11,9 @@ import (
 // e.g. ["0.1", "0.10", "1.0"] or ["0.1.0", "0.10.1", "1.0.2"]
 // any number of minor/patch versions will work as long as all versions are consistent
 // i.e. this is not allowed ["0.1", "0.10.0", "1.0"] and the function will return ""
-func LatestVersion(vl []string) string {
+func LatestVersion(vl []string) (string, error) {
 	if len(vl) == 0 {
-		return ""
+		return "", errors.New("Unable to determine latest version, empty slice")
 	}
 
 	var ss [][]string
@@ -26,7 +27,7 @@ func LatestVersion(vl []string) string {
 		} else {
 			if vlen != len(sv) {
 				log.Printf("Error: format mismatch for version '%s'", v)
-				return ""
+				return "", errors.New("Unable to determine latest version, format mismatch")
 			}
 		}
 		ss = append(ss, sv)
@@ -39,12 +40,12 @@ func LatestVersion(vl []string) string {
 				int1, err := strconv.Atoi(ss[n][l])
 				if err != nil {
 					log.Printf("Error: format mismatch for version '%s'", strings.Join(ss[n], "."))
-					return ""
+					return "", errors.New("Unable to determine latest version, format mismatch")
 				}
 				int2, err := strconv.Atoi(ss[n+1][l])
 				if err != nil {
 					log.Printf("Error: format mismatch for version '%s'", strings.Join(ss[n+1], "."))
-					return ""
+					return "", errors.New("Unable to determine latest version, format mismatch")
 				}
 				if int1 > int2 {
 					ss[n], ss[n+1] = ss[n+1], ss[n]
@@ -53,7 +54,7 @@ func LatestVersion(vl []string) string {
 		}
 	}
 
-	return strings.Join(ss[len(ss)-1], ".")
+	return strings.Join(ss[len(ss)-1], "."), nil
 }
 
 // StringInSlice returns true if s is in the list slice

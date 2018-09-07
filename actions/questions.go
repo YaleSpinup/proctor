@@ -1,6 +1,9 @@
 package actions
 
 import (
+	"errors"
+
+	"github.com/YaleSpinup/proctor/libs/helpers"
 	"github.com/YaleSpinup/proctor/models"
 	"github.com/gobuffalo/buffalo"
 )
@@ -9,7 +12,22 @@ import (
 // Optional "version" query param can specify a version, otherwise the latest one will be used
 func QuestionsGet(c buffalo.Context) error {
 	questions := models.Questions{}
-	if err := questions.Load(&S3, c.Param("campaign"), c.Param("version")); err != nil {
+	campaign := c.Param("campaign")
+	version := c.Param("version")
+
+	// determine latest version if none specified
+	if len(version) == 0 {
+		vl, err := S3.GetVersions(questions.Path(campaign))
+		if err != nil {
+			return errors.New("Unable to determine latest questions version")
+		}
+		version, err = helpers.LatestVersion(vl)
+		if err != nil {
+			return errors.New("Unable to determine latest questions version")
+		}
+	}
+
+	if err := S3.Load(&questions, questions.Object(campaign, version)); err != nil {
 		return err
 	}
 

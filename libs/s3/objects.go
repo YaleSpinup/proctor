@@ -1,6 +1,7 @@
 package s3
 
 import (
+	"errors"
 	"io/ioutil"
 	"log"
 
@@ -8,6 +9,11 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
+
+// Loader interface describes structs that can load JSON objects
+type Loader interface {
+	Load([]byte) error
+}
 
 // GetObject returns an object from S3
 func (s Client) GetObject(key string) ([]byte, error) {
@@ -51,4 +57,26 @@ func (s Client) ListObjects(prefix, delimiter string) (*s3.ListObjectsOutput, er
 	}
 
 	return result, nil
+}
+
+// Load loads the risk levels json from S3 and returns a slice of bytes
+func (s Client) Load(l Loader, path string) error {
+	if len(path) == 0 {
+		return errors.New("Path cannot be empty")
+	}
+
+	log.Printf("Loading %s", path)
+	o, err := s.GetObject(path)
+	if err != nil {
+		if len(o) == 0 {
+			return errors.New("Object not found in S3")
+		}
+		return errors.New("Unable to get object from S3")
+	}
+
+	if err := l.Load(o); err != nil {
+		return err
+	}
+
+	return nil
 }

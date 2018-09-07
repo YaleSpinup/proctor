@@ -3,11 +3,8 @@ package models
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"log"
 
 	"github.com/YaleSpinup/proctor/libs/helpers"
-	"github.com/YaleSpinup/proctor/libs/s3"
 )
 
 // RiskLevels is a versioned collection of RiskLevel's
@@ -24,34 +21,21 @@ type RiskLevel struct {
 	Datatypes []string `json:"datatypes"`
 }
 
-// Load loads the risk levels json from S3 and returns a slice of bytes
-func (rl *RiskLevels) Load(s3 *s3.Client, version string) error {
-	if len(version) == 0 {
-		// determine latest version
-		vl, err := s3.GetVersions("risklevels/", "/")
-		if err != nil {
-			return errors.New("Unable to determine latest risklevels version")
-		}
-		version = helpers.LatestVersion(vl)
-		if len(version) == 0 {
-			return errors.New("Unable to determine latest risklevels version")
-		}
-	}
+// Path returns the main S3 path containing risk level versions
+func (rl RiskLevels) Path() string {
+	return "risklevels/"
+}
 
-	log.Printf("Loading risk levels version %s", version)
-	path := fmt.Sprintf("risklevels/%s/risklevels.json", version)
-	o, err := s3.GetObject(path)
-	if err != nil {
-		if len(o) == 0 {
-			return errors.New("Object not found in S3")
-		}
-		return errors.New("Unable to get object from S3")
-	}
+// Object returns the full S3 path to the object containing risk level data for a specific version
+func (rl RiskLevels) Object(v string) string {
+	return rl.Path() + v + "/risklevels.json"
+}
 
+// Load unmarshals a JSON object to a RiskLevels struct
+func (rl *RiskLevels) Load(o []byte) error {
 	if err := json.Unmarshal(o, rl); err != nil {
 		return errors.New("Unable to unmarshal risk levels")
 	}
-
 	return nil
 }
 

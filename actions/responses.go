@@ -15,16 +15,17 @@ func ResponsesPost(c buffalo.Context) error {
 	if err := c.Bind(&responses); err != nil {
 		return c.Error(400, errors.New("Bad request"))
 	}
+	// TODO: Add responses validation
 
 	// get questions/answers for the given campaign and version
 	questions := models.Questions{}
-	if err := questions.Load(&S3, c.Param("campaign"), c.Param("version")); err != nil {
+	if err := S3.Load(&questions, questions.Object(c.Param("campaign"), responses.QuestionsVersion)); err != nil {
 		return err
 	}
 
 	// basic response length validation
 	if len(responses.List) != len(questions.List) {
-		return errors.New("Invalid question response: all questions must be answered")
+		return c.Error(422, errors.New("Invalid question response: all questions must be answered"))
 	}
 
 	// determine the associated data types based on all the answers in the response
@@ -45,7 +46,7 @@ func ResponsesPost(c buffalo.Context) error {
 
 	// get mapping of data types to risk levels
 	risklevels := models.RiskLevels{}
-	if err := risklevels.Load(&S3, c.Param("version")); err != nil {
+	if err := S3.Load(&risklevels, risklevels.Object(responses.RisklevelsVersion)); err != nil {
 		return err
 	}
 	hr, err := risklevels.Highest(datatypes)

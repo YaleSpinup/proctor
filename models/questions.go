@@ -3,11 +3,6 @@ package models
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"log"
-
-	"github.com/YaleSpinup/proctor/libs/helpers"
-	"github.com/YaleSpinup/proctor/libs/s3"
 )
 
 // Questions is a versioned collection of Question's
@@ -30,33 +25,20 @@ type Answer struct {
 	Datatypes []string `json:"datatypes"`
 }
 
-// Load loads the risk levels json from S3 and returns a slice of bytes
-func (q *Questions) Load(s3 *s3.Client, campaign, version string) error {
-	if len(version) == 0 {
-		// determine latest version
-		vl, err := s3.GetVersions("questions/"+campaign+"/", "/")
-		if err != nil {
-			return errors.New("Unable to determine latest questions version for " + campaign)
-		}
-		version = helpers.LatestVersion(vl)
-		if len(version) == 0 {
-			return errors.New("Unable to determine latest questions version for " + campaign)
-		}
-	}
+// Path returns the main S3 path containing questions versions for a campaign
+func (ql Questions) Path(c string) string {
+	return "questions/" + c + "/"
+}
 
-	log.Printf("Loading %s questions version %s", campaign, version)
-	path := fmt.Sprintf("questions/%s/%s/questions.json", campaign, version)
-	o, err := s3.GetObject(path)
-	if err != nil {
-		if len(o) == 0 {
-			return errors.New("Object not found in S3")
-		}
-		return errors.New("Unable to get object from S3")
-	}
+// Object returns the full S3 path to the object containing questions data for a specific campaign/version
+func (ql Questions) Object(c, v string) string {
+	return ql.Path(c) + v + "/questions.json"
+}
 
-	if err := json.Unmarshal(o, q); err != nil {
+// Load unmarshals a JSON object to a Questions struct
+func (ql *Questions) Load(o []byte) error {
+	if err := json.Unmarshal(o, ql); err != nil {
 		return errors.New("Unable to unmarshal questions")
 	}
-
 	return nil
 }
