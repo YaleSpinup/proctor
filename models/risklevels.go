@@ -1,7 +1,6 @@
 package models
 
 import (
-	"encoding/json"
 	"errors"
 
 	"github.com/YaleSpinup/proctor/libs/helpers"
@@ -29,14 +28,6 @@ func (rl RiskLevels) Path() string {
 // Object returns the full S3 path to the object containing risk level data for a specific version
 func (rl RiskLevels) Object(v string) string {
 	return rl.Path() + v + "/risklevels.json"
-}
-
-// Load unmarshals a JSON object to a RiskLevels struct
-func (rl *RiskLevels) Load(o []byte) error {
-	if err := json.Unmarshal(o, rl); err != nil {
-		return errors.New("Unable to unmarshal risk levels")
-	}
-	return nil
 }
 
 // Highest returns the RiskLevel with the highest score based on a list of data types

@@ -1,10 +1,5 @@
 package models
 
-import (
-	"encoding/json"
-	"errors"
-)
-
 // Questions is a versioned collection of Question's
 type Questions struct {
 	List              map[string]Question `json:"questions"`
@@ -33,12 +28,4 @@ func (ql Questions) Path(c string) string {
 // Object returns the full S3 path to the object containing questions data for a specific campaign/version
 func (ql Questions) Object(c, v string) string {
 	return ql.Path(c) + v + "/questions.json"
-}
-
-// Load unmarshals a JSON object to a Questions struct
-func (ql *Questions) Load(o []byte) error {
-	if err := json.Unmarshal(o, ql); err != nil {
-		return errors.New("Unable to unmarshal questions")
-	}
-	return nil
 }

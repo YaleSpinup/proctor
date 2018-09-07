@@ -1,7 +1,9 @@
 package s3
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 
@@ -9,11 +11,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
-
-// Loader interface describes structs that can load JSON objects
-type Loader interface {
-	Load([]byte) error
-}
 
 // GetObject returns an object from S3
 func (s Client) GetObject(key string) ([]byte, error) {
@@ -60,7 +57,7 @@ func (s Client) ListObjects(prefix, delimiter string) (*s3.ListObjectsOutput, er
 }
 
 // Load loads the risk levels json from S3 and returns a slice of bytes
-func (s Client) Load(l Loader, path string) error {
+func (s Client) Load(i interface{}, path string) error {
 	if len(path) == 0 {
 		return errors.New("Path cannot be empty")
 	}
@@ -74,8 +71,8 @@ func (s Client) Load(l Loader, path string) error {
 		return errors.New("Unable to get object from S3")
 	}
 
-	if err := l.Load(o); err != nil {
-		return err
+	if err := json.Unmarshal(o, i); err != nil {
+		return fmt.Errorf("Unable to unmarshal %T", i)
 	}
 
 	return nil
