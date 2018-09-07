@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -10,51 +11,53 @@ import (
 // LatestVersion gets a slice of versions and returns the latest version as a string
 // e.g. ["0.1", "0.10", "1.0"] or ["0.1.0", "0.10.1", "1.0.2"]
 // any number of minor/patch versions will work as long as all versions are consistent
-// i.e. this is not allowed ["0.1", "0.10.0", "1.0"] and the function will return ""
+// i.e. this is not allowed ["0.1", "0.10.0", "1.0"] and the function will return error
 func LatestVersion(vl []string) (string, error) {
 	if len(vl) == 0 {
 		return "", errors.New("Unable to determine latest version, empty slice")
 	}
 
-	var ss [][]string
-	var vlen int
+	// initialize latest with zeros
+	latest := []int{}
+	for i := 0; i < len(strings.Split(vl[0], ".")); i++ {
+		latest = append(latest, 0)
+	}
 
-	// split all versions into their atomic parts (e.g. "1.0" becomes ["1", "0"]) and put into slice of slices ss
-	for _, v := range vl {
-		sv := strings.Split(v, ".")
-		if vlen == 0 {
-			vlen = len(sv)
-		} else {
-			if vlen != len(sv) {
-				log.Printf("Error: format mismatch for version '%s'", v)
+	// loop over list and compare each to latest
+	for _, sv := range vl {
+		current := strings.Split(sv, ".")
+		if len(current) < 2 {
+			log.Printf("Error: format mismatch for version '%s'", sv)
+			return "", errors.New("Unable to determine latest version, format mismatch")
+		}
+
+		si := []int{}
+		for _, s := range current {
+			i, err := strconv.Atoi(s)
+			if err != nil {
+				log.Printf("Error: format mismatch for version '%s'", sv)
 				return "", errors.New("Unable to determine latest version, format mismatch")
 			}
+			si = append(si, i)
 		}
-		ss = append(ss, sv)
-	}
 
-	// bubble sort the slices starting with the minor version (the one on the right) and moving to the left
-	for l := vlen - 1; l >= 0; l-- {
-		for m := 0; m < len(ss); m++ {
-			for n := 0; n < len(ss)-1; n++ {
-				int1, err := strconv.Atoi(ss[n][l])
-				if err != nil {
-					log.Printf("Error: format mismatch for version '%s'", strings.Join(ss[n], "."))
-					return "", errors.New("Unable to determine latest version, format mismatch")
-				}
-				int2, err := strconv.Atoi(ss[n+1][l])
-				if err != nil {
-					log.Printf("Error: format mismatch for version '%s'", strings.Join(ss[n+1], "."))
-					return "", errors.New("Unable to determine latest version, format mismatch")
-				}
-				if int1 > int2 {
-					ss[n], ss[n+1] = ss[n+1], ss[n]
-				}
+		if len(latest) != len(si) {
+			log.Printf("Error: format mismatch for version '%s'", sv)
+			return "", errors.New("Unable to determine latest version, format mismatch")
+		}
+
+		for i, siv := range si {
+			// we break out unless the version index is equal to the latest one
+			if siv > latest[i] {
+				latest = si
+				break
+			}
+			if siv < latest[i] {
+				break
 			}
 		}
 	}
-
-	return strings.Join(ss[len(ss)-1], "."), nil
+	return strings.Trim(strings.Join(strings.Fields(fmt.Sprint(latest)), "."), "[]"), nil
 }
 
 // StringInSlice returns true if s is in the list slice
