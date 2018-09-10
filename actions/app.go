@@ -7,9 +7,7 @@ import (
 	"github.com/YaleSpinup/proctor/libs/s3"
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/middleware"
-	"github.com/gobuffalo/buffalo/middleware/ssl"
 	"github.com/gobuffalo/envy"
-	"github.com/unrolled/secure"
 
 	"github.com/gobuffalo/x/sessions"
 	"github.com/rs/cors"
@@ -37,8 +35,6 @@ func App() *buffalo.App {
 			},
 			SessionName: "_proctor_session",
 		})
-		// Automatically redirect to SSL
-		app.Use(forceSSL())
 
 		// Load .env config file
 		if err := envy.Load(); err != nil {
@@ -63,16 +59,4 @@ func App() *buffalo.App {
 	}
 
 	return app
-}
-
-// forceSSL will return a middleware that will redirect an incoming request
-// if it is not HTTPS. "http://example.com" => "https://example.com".
-// This middleware does **not** enable SSL. for your application. To do that
-// we recommend using a proxy: https://gobuffalo.io/en/docs/proxy
-// for more information: https://github.com/unrolled/secure/
-func forceSSL() buffalo.MiddlewareFunc {
-	return ssl.ForceSSL(secure.Options{
-		SSLRedirect:     ENV == "production",
-		SSLProxyHeaders: map[string]string{"X-Forwarded-Proto": "https"},
-	})
 }
