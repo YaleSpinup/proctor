@@ -10,9 +10,9 @@ type Questions struct {
 
 // Question has information about a question
 type Question struct {
-	Text       string            `json:"text"`
-	Additional string            `json:"additional"`
-	Answers    map[string]Answer `json:"answers"`
+	Text     string            `json:"text"`
+	LongText string            `json:"long_text"`
+	Answers  map[string]Answer `json:"answers"`
 }
 
 // Answer has information about an answer
