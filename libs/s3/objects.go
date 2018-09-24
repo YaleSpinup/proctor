@@ -80,12 +80,12 @@ func (s Client) Load(i interface{}, path string) error {
 }
 
 // PutObject takes a byte array and saves it in S3 with the given key name
-func (s Client) PutObject(object []byte, key string, ct string) error {
+func (s Client) PutObject(key, contentType string, object []byte) error {
 	input := &s3.PutObjectInput{
 		Bucket:      aws.String(s.Bucket),
 		Key:         aws.String(key),
 		Body:        bytes.NewReader(object),
-		ContentType: aws.String(ct),
+		ContentType: aws.String(contentType),
 	}
 
 	if _, err := s.Service.PutObject(input); err != nil {
@@ -108,7 +108,7 @@ func (s Client) Save(i interface{}, path string) error {
 		return fmt.Errorf("Unable to marshal %T", i)
 	}
 
-	if err = s.PutObject(j, path, "application/json"); err != nil {
+	if err = s.PutObject(path, "application/json", j); err != nil {
 		return errors.New("Unable to put object into S3")
 	}
 

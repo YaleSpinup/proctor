@@ -2,7 +2,6 @@ package actions
 
 import (
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/YaleSpinup/proctor/libs/helpers"
@@ -75,11 +74,11 @@ func ResponsesPost(c buffalo.Context) error {
 	// save responses to S3
 	// we also include the original questions and the outcome that was returned to the client
 	s := struct {
-		GeneratedOutcome  Outcome
-		ClientResponse    models.Responses
-		OriginalQuestions models.Questions
+		Outcome   Outcome
+		Responses models.Responses
+		Questions models.Questions
 	}{outcome, responses, questions}
-	path := fmt.Sprint(responses.Path(c.Param("campaign")), outcome.ID.String(), ".json")
+	path := responses.Path(c.Param("campaign")) + outcome.ID.String() + ".json"
 	if err := S3.Save(s, path); err != nil {
 		return err
 	}
