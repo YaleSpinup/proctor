@@ -7,12 +7,14 @@ import (
 	"github.com/YaleSpinup/proctor/libs/helpers"
 	"github.com/YaleSpinup/proctor/models"
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/uuid"
 )
 
 // Outcome has the data types and risk level outcome determined based on the questions response
 type Outcome struct {
-	DataTypes []string `json:"datatypes"`
-	RiskLevel string   `json:"risklevel"`
+	ID        uuid.UUID `json:"id"`
+	DataTypes []string  `json:"datatypes"`
+	RiskLevel string    `json:"risklevel"`
 }
 
 // ResponsesPost processes the question responses and returns the data type and security level in an Outcome
@@ -63,7 +65,23 @@ func ResponsesPost(c buffalo.Context) error {
 	var outcome Outcome
 	outcome.DataTypes = datatypes
 	outcome.RiskLevel = hr.Text
+	outcome.ID, err = uuid.NewV4()
+	if err != nil {
+		return c.Error(500, errors.New("Error generating outcome id"))
+	}
 	log.Println("Outcome response:", outcome)
+
+	// save responses to S3
+	// we also include the original questions and the outcome that was returned to the client
+	s := struct {
+		Outcome   Outcome
+		Responses models.Responses
+		Questions models.Questions
+	}{outcome, responses, questions}
+	path := responses.Path(c.Param("campaign")) + outcome.ID.String() + ".json"
+	if err := S3.Save(s, path); err != nil {
+		return err
+	}
 
 	return c.Render(200, r.JSON(outcome))
 }

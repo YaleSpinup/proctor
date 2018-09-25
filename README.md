@@ -102,21 +102,27 @@ GET http://127.0.0.1:3000/v1/proctor/test/questions[?version=1.0]
 
 ### Submit a response
 
-To submit a response you need to POST to the `/responses` endpoint for the given campaign. The `responses` hash must contain a mapping of question id's to answer id's for _all_ provided questions. In addition, `risklevels_version` and `questions_version` should be specified.
+To submit a response you need to POST to the `/responses` endpoint for the given campaign. The `responses` hash must contain a mapping of question id's to answer id's for _all_ provided questions. In addition, `risklevels_version` and `questions_version` should be specified. The `metadata` can contain any number of optional fields. The API will respond with the calculated `risklevel` and a list of `datatypes`. It will also save the user response as an object in S3 (`/responses/{campaign}/UUID.json`).
 
 ```
 POST http://127.0.0.1:3000/v1/proctor/test/responses
 {
     "risklevels_version": "1.0",
-    "questions_version":"1.0",
+    "questions_version": "1.0",
     "responses": {
         "287A0832-C218-4B07-9019-62BEB9DE0CD6": "a",
         "E8B8B198-EDDB-48AF-8068-749D4982849C": "a",
         "8E693F8E-475A-475B-950F-F17EA997DD32": "a"
+    },
+    "metadata": {
+      "user": "Milo Minderbinder",
+      "application": "Catch-22",
+      "timestamp": "2018-09-20T19:03:59.802Z"
     }
 }
 
 {
+    "id": "fec320c4-09ea-4bf1-8715-8d1aee1287a9",
     "datatypes": [
         "FERPA",
         "HIPAA",
