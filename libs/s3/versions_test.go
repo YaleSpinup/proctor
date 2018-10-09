@@ -6,12 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 )
-
-type mockS3Service struct {
-	s3iface.S3API
-}
 
 func (m mockS3Service) ListObjects(input *s3.ListObjectsInput) (*s3.ListObjectsOutput, error) {
 	prefix := input.Prefix
