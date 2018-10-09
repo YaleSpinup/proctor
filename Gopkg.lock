@@ -26,7 +26,7 @@
   version = "v1.5"
 
 [[projects]]
-  digest = "1:d2016179158c4fe8dfe6bbd99a19ef2ea3551b522c4e236064febf8d67ddffa6"
+  digest = "1:990f103906075afd47f5efeced30516a1103edbba51c67cd2edaa5c0bee1d681"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -59,6 +59,7 @@
     "private/protocol/restxml",
     "private/protocol/xml/xmlutil",
     "service/s3",
+    "service/s3/s3iface",
     "service/sts",
   ]
   pruneopts = "UT"
@@ -137,7 +138,6 @@
     "binding",
     "middleware",
     "middleware/csrf",
-    "middleware/ssl",
     "render",
     "servers",
     "worker",
@@ -590,14 +590,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:9624432019da6390fc19bd6ef16d110efb7bee291f1d9048273ab229fcb2bea1"
-  name = "github.com/unrolled/secure"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "8287f3899c8e3d490748e18fe7d438629132914e"
-
-[[projects]]
-  branch = "master"
   digest = "1:001a4e7a40e50ff2ef32e2556bca50c4f77daa457db3ac6afc8bea9bb2122cfb"
   name = "golang.org/x/crypto"
   packages = [
@@ -672,16 +664,16 @@
     "github.com/aws/aws-sdk-go/aws/credentials",
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/aws/aws-sdk-go/service/s3",
+    "github.com/aws/aws-sdk-go/service/s3/s3iface",
     "github.com/gobuffalo/buffalo",
     "github.com/gobuffalo/buffalo/middleware",
-    "github.com/gobuffalo/buffalo/middleware/ssl",
     "github.com/gobuffalo/buffalo/render",
     "github.com/gobuffalo/envy",
     "github.com/gobuffalo/packr",
     "github.com/gobuffalo/suite",
+    "github.com/gobuffalo/uuid",
     "github.com/gobuffalo/x/sessions",
     "github.com/rs/cors",
-    "github.com/unrolled/secure",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
