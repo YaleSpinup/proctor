@@ -23,7 +23,9 @@ func ResponsesPost(c buffalo.Context) error {
 	if err := c.Bind(&responses); err != nil {
 		return c.Error(400, errors.New("Bad request"))
 	}
-	// TODO: Add responses validation
+	if len(responses.List) == 0 || len(responses.QuestionsVersion) == 0 || len(responses.RisklevelsVersion) == 0 {
+		return c.Error(400, errors.New("Bad request"))
+	}
 
 	// get questions/answers for the given campaign and version
 	questions := models.Questions{}

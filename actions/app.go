@@ -35,9 +35,6 @@ func App() *buffalo.App {
 			SessionName: "_proctor_session",
 		})
 
-		// Set the request content type to JSON
-		app.Use(middleware.SetContentType("application/json"))
-
 		if ENV == "development" {
 			app.Use(middleware.ParameterLogger)
 		}

@@ -3,7 +3,6 @@ package s3
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"reflect"
 	"testing"
@@ -15,6 +14,8 @@ import (
 type mockS3Service struct {
 	s3iface.S3API
 }
+
+var GotPutObjectInput *s3.PutObjectInput
 
 type MockObject struct {
 	Name    string `json:"name"`
@@ -32,26 +33,8 @@ func (m mockS3Service) GetObject(input *s3.GetObjectInput) (*s3.GetObjectOutput,
 }
 
 func (m mockS3Service) PutObject(input *s3.PutObjectInput) (*s3.PutObjectOutput, error) {
-	test := MockObject{
-		Name:    "SaveMe",
-		Version: "1.0",
-		Number:  99,
-	}
-	t, _ := json.MarshalIndent(test, "", "  ")
-
-	var err error
-	switch {
-	case *input.Bucket != "Mockery":
-		err = errors.New("Incorrect Bucket:" + *input.Bucket)
-	case *input.ContentType != "application/json":
-		err = errors.New("Incorrect ContentType:" + *input.ContentType)
-	case *input.Key != "s3/path":
-		err = errors.New("Incorrect Key:" + *input.Key)
-	case !reflect.DeepEqual(input.Body, bytes.NewReader(t)):
-		err = errors.New("Incorrect Body")
-	}
-
-	return &s3.PutObjectOutput{}, err
+	GotPutObjectInput = input
+	return &s3.PutObjectOutput{}, nil
 }
 
 func TestLoad(t *testing.T) {
@@ -85,17 +68,28 @@ func TestSave(t *testing.T) {
 		Bucket:  "Mockery",
 	}
 
-	test := MockObject{
+	mo := MockObject{
 		Name:    "SaveMe",
 		Version: "1.0",
 		Number:  99,
 	}
 
-	if err := mc.Save(&test, ""); err == nil {
+	if err := mc.Save(&mo, ""); err == nil {
 		t.Fatal("Empty path - expected error, got: nil")
 	}
 
-	if err := mc.Save(&test, "s3/path"); err != nil {
+	if err := mc.Save(&mo, "s3/path"); err != nil {
 		t.Fatalf("Expected error nil, got: %v", err)
+	}
+	test, _ := json.MarshalIndent(mo, "", "  ")
+	switch {
+	case *GotPutObjectInput.Bucket != "Mockery":
+		t.Fatal("Incorrect Bucket:", *GotPutObjectInput.Bucket)
+	case *GotPutObjectInput.ContentType != "application/json":
+		t.Fatal("Incorrect ContentType:", *GotPutObjectInput.ContentType)
+	case *GotPutObjectInput.Key != "s3/path":
+		t.Fatal("Incorrect Key:", *GotPutObjectInput.Key)
+	case !reflect.DeepEqual(GotPutObjectInput.Body, bytes.NewReader(test)):
+		t.Fatal("Incorrect Body")
 	}
 }
