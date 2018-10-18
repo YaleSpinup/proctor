@@ -27,6 +27,9 @@ func (rl RiskLevels) Path() string {
 
 // Object returns the full S3 path to the object containing risk level data for a specific version
 func (rl RiskLevels) Object(v string) string {
+	if v == "" {
+		return ""
+	}
 	return rl.Path() + v + "/risklevels.json"
 }
 

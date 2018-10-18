@@ -28,5 +28,8 @@ func (ql Questions) Path(c string) string {
 
 // Object returns the full S3 path to the object containing questions data for a specific campaign/version
 func (ql Questions) Object(c, v string) string {
+	if v == "" {
+		return ""
+	}
 	return ql.Path(c) + v + "/questions.json"
 }

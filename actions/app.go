@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"log"
 	"os"
 
 	"github.com/YaleSpinup/proctor/libs/s3"
@@ -35,14 +34,6 @@ func App() *buffalo.App {
 			},
 			SessionName: "_proctor_session",
 		})
-
-		// Load .env config file
-		if err := envy.Load(); err != nil {
-			log.Fatal("Error: unable to load config file!")
-		}
-
-		// Set the request content type to JSON
-		app.Use(middleware.SetContentType("application/json"))
 
 		if ENV == "development" {
 			app.Use(middleware.ParameterLogger)
