@@ -2,15 +2,21 @@
 # https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 FROM gobuffalo/buffalo:v0.14.9 as builder
 
+ARG version=0.0.0
+ARG prerelease
+ARG githash=""
+ARG buildstamp=""
+
 RUN mkdir /app
 WORKDIR /app
 ENV GO111MODULE=on
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
+RUN go version
 
 ADD . .
-RUN buffalo build --static -o /bin/app
+RUN buffalo build --static -o /bin/app --ldflags "-X github.com/YaleSpinup/proctor/proctor.Version=$version -X github.com/YaleSpinup/proctor/proctor.VersionPrerelease=$prerelease -X github.com/YaleSpinup/proctor/proctor.GitHash=$githash -X github.com/YaleSpinup/proctor/proctor.BuildStamp=$buildstamp"
 
 FROM alpine
 RUN apk add --no-cache bash
