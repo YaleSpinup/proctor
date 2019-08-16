@@ -5,8 +5,8 @@ import (
 
 	"github.com/YaleSpinup/proctor/libs/s3"
 	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/buffalo/middleware"
 	"github.com/gobuffalo/envy"
+	paramlogger "github.com/gobuffalo/mw-paramlogger"
 
 	"github.com/gobuffalo/x/sessions"
 	"github.com/rs/cors"
@@ -36,7 +36,7 @@ func App() *buffalo.App {
 		})
 
 		if ENV == "development" {
-			app.Use(middleware.ParameterLogger)
+			app.Use(paramlogger.ParameterLogger)
 		}
 
 		// initialize S3 client session

@@ -1,12 +1,15 @@
 # This is a multi-stage Dockerfile and requires >= Docker 17.05
 # https://docs.docker.com/engine/userguide/eng-image/multistage-build/
-FROM gobuffalo/buffalo:v0.12.6 as builder
+FROM gobuffalo/buffalo:v0.14.9 as builder
 
-RUN mkdir -p $GOPATH/src/github.com/YaleSpinup/proctor
-WORKDIR $GOPATH/src/github.com/YaleSpinup/proctor
+RUN mkdir /app
+WORKDIR /app
+ENV GO111MODULE=on
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 
 ADD . .
-RUN dep ensure
 RUN buffalo build --static -o /bin/app
 
 FROM alpine
