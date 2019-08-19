@@ -10,7 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3iface"
-	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/gobuffalo/suite"
 )
 
@@ -23,7 +23,7 @@ type mockS3Service struct {
 }
 
 func Test_ActionSuite(t *testing.T) {
-	action, err := suite.NewActionWithFixtures(App(), packr.NewBox("../fixtures"))
+	action, err := suite.NewActionWithFixtures(App(), packr.New("../fixtures", "../fixtures"))
 	if err != nil {
 		t.Fatal(err)
 	}

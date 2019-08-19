@@ -7,7 +7,7 @@ import (
 	"github.com/YaleSpinup/proctor/libs/helpers"
 	"github.com/YaleSpinup/proctor/models"
 	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/uuid"
+	"github.com/gofrs/uuid"
 )
 
 // Outcome has the data types and risk level outcome determined based on the questions response
