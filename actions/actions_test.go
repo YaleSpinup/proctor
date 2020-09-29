@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 	"github.com/gobuffalo/packr/v2"
-	"github.com/gobuffalo/suite"
+	"github.com/gobuffalo/suite/v3"
 )
 
 type ActionSuite struct {

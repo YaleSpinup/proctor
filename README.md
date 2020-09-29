@@ -200,7 +200,8 @@ Here's a sample `risklevels.json` (make sure the `version` matches the version o
 
 - Install Buffalo framework (v0.12+): https://gobuffalo.io/en/docs/installation
 - Run `buffalo dev` to start the app locally
-- Run `buffalo tests -v` to run all tests
+- Run `buffalo test -v` to run all tests
+- Run `buffalo update` to update the app within buffalo
 
 ## Authors
 
