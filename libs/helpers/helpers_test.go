@@ -3,6 +3,7 @@ package helpers
 import (
 	"errors"
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -138,6 +139,8 @@ var testsUniqueSlice = []struct {
 func TestUniqueSlice(t *testing.T) {
 	for _, tc := range testsUniqueSlice {
 		got := UniqueSlice(tc.test)
+		sort.Strings(tc.want)
+		sort.Strings(got)
 		if !reflect.DeepEqual(got, tc.want) {
 			t.Fatalf("UniqueSlice(%v) = %v, want %v.", tc.test, got, tc.want)
 		}
