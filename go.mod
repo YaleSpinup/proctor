@@ -8,7 +8,7 @@ require (
 	github.com/gobuffalo/envy v1.10.2
 	github.com/gobuffalo/mw-paramlogger v1.0.1
 	github.com/gobuffalo/packr/v2 v2.8.0
-	github.com/gobuffalo/suite/v3 v3.0.0
+	github.com/gobuffalo/suite/v3 v3.0.2
 	github.com/gobuffalo/x v0.1.0
 	github.com/gofrs/uuid v4.3.0+incompatible
 	github.com/rs/cors v1.8.2
@@ -18,7 +18,6 @@ require (
 	github.com/BurntSushi/toml v1.2.0 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
-	github.com/cockroachdb/cockroach-go v2.0.1+incompatible // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/fatih/color v1.13.0 // indirect
@@ -39,7 +38,7 @@ require (
 	github.com/gobuffalo/nulls v0.4.2 // indirect
 	github.com/gobuffalo/packd v1.0.2 // indirect
 	github.com/gobuffalo/plush/v4 v4.1.15 // indirect
-	github.com/gobuffalo/pop/v5 v5.0.9 // indirect
+	github.com/gobuffalo/pop/v5 v5.3.2 // indirect
 	github.com/gobuffalo/pop/v6 v6.0.6 // indirect
 	github.com/gobuffalo/refresh v1.13.2 // indirect
 	github.com/gobuffalo/tags/v3 v3.1.4 // indirect
