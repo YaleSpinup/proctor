@@ -11,7 +11,7 @@ require (
 	github.com/gobuffalo/suite/v3 v3.0.0
 	github.com/gobuffalo/x v0.1.0
 	github.com/gofrs/uuid v4.3.0+incompatible
-	github.com/rs/cors v1.8.2
+	github.com/rs/cors v1.10.1
 )
 
 require (
