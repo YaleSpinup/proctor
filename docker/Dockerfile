@@ -1,6 +1,6 @@
 FROM golang:1.21.3-alpine as gobuff
 
-EXPOSE 3000
+EXPOSE 8080
 
 ENV GOPROXY=https://proxy.golang.org
 
