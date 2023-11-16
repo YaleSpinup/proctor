@@ -44,13 +44,9 @@ RUN buffalo build --static -o /bin/app --ldflags "-X github.com/YaleSpinup/proct
 FROM alpine
 RUN apk add --no-cache bash
 RUN apk add --no-cache python3
-#RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN apk add --no-cache ca-certificates
-RUN apk add --no-cache wget gettext && \
-    wget -nv "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" && \
-    unzip awscli-bundle.zip && \
-    ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
-    /usr/local/bin/aws --version
+RUN apk add --no-cache wget gettext
+RUN apk add --no-cache aws-cli
 
 WORKDIR /bin/
 
