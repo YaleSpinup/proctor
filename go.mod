@@ -3,7 +3,7 @@ module github.com/YaleSpinup/proctor
 go 1.21
 
 require (
-	github.com/aws/aws-sdk-go v1.47.11
+	github.com/aws/aws-sdk-go v1.48.0
 	github.com/gobuffalo/buffalo v1.1.0
 	github.com/gobuffalo/envy v1.10.2
 	github.com/gobuffalo/mw-paramlogger v1.0.2
